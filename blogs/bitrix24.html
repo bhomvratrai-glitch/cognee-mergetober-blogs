@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitrix24 CRM Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #eff6ff; color: #2563eb; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.6rem; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; font-size: 0.98rem;
+    }
+    footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav">
+      <a href="../index.html">← Back to Overview</a>
+    </div>
+
+    <header>
+      <div class="badge">Mergetober 2026 Submission</div>
+      <h1>Bitrix24 CRM Connector: Enterprise Pipeline & Customer Intelligence for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai (@bhomvratrai-glitch)</span>
+        <span>•</span>
+        <span>Issue #6297</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <h2>1. The Problem: CRM Memory Silos in Enterprise AI</h2>
+      <p>Bitrix24 powers over 12 million organizations worldwide with its integrated CRM, pipeline automation, company records, and client communications. However, when building AI sales copilots and automated support agents, this vital operational context remains trapped behind REST API endpoints. An LLM cannot reason over ongoing customer deals, negotiation stages, or timeline comments without direct access to structured knowledge graphs.</p>
+
+      <h2>2. Technical Architecture & Inbound Webhook Design</h2>
+      <p>The <code>cognee-community-connector-bitrix24</code> connects securely via Bitrix24's native inbound webhook architecture. Unlike complex OAuth2 flows that require continuous token refresh servers, inbound webhooks provide dedicated REST authorization scoped directly to CRM resources.</p>
+
+      <div class="info-box">
+        <strong>Key Architectural Highlights:</strong>
+        <ul style="margin-top: 8px; margin-left: 20px;">
+          <li><strong>Pipeline Deals & Opportunities:</strong> Pulls deal stages, opportunity values, currencies, associated companies, and contact IDs.</li>
+          <li><strong>Timeline Comments Threading:</strong> Queries chronological discussion notes per record to capture negotiation context and client requests.</li>
+          <li><strong>Contacts & Organizations:</strong> Ingests lead profiles, communication channels (phone/email), and corporate hierarchy.</li>
+          <li><strong>Pacing & Leaky Bucket Resilience:</strong> Adheres to Bitrix24's 2 req/s limit with explicit handling for 401 invalid credentials, 429 operation time limits, and 503 query limit errors.</li>
+        </ul>
+      </div>
+
+      <h2>3. Code Walkthrough: Ingestion into Cognee</h2>
+      <pre><code class="language-python">import asyncio
+from cognee_community_connector_bitrix24 import Bitrix24Connector
+import cognee
+
+async def main():
+    webhook_url = "https://your-company.bitrix24.com/rest/1/secret_token/"
+    connector = Bitrix24Connector(webhook_url=webhook_url)
+
+    # Ingest deals, contacts, and companies with timeline comments
+    documents = await connector.to_documents(
+        crm_types=["deal", "contact", "company"],
+        limit_per_type=20,
+        include_comments=True
+    )
+
+    # Cognify into vector and knowledge graph memory
+    await cognee.add(documents)
+    await cognee.cognify()
+
+    await connector.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+
+      <h2>4. Hermetic Offline Verification</h2>
+      <p>To ensure high quality and zero external dependencies during maintainer CI checks, the package includes an offline mock test suite covering deal extraction, contact phone/email normalization, company revenue parsing, markdown conversion, and rate limit errors (5/5 tests passing in 0.18s).</p>
+    </div>
+
+    <footer>
+      <p>Built with ❤️ by <strong>Bhomvrat Rai</strong> (@bhomvratrai-glitch) for the WeMakeDevs × Cognee Mergetober Hackathon.</p>
+    </footer>
+  </div>
+</body>
+</html>
