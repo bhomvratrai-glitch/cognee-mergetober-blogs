@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InfluxDB Time-Series Telemetry Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #eff6ff; color: #2563eb; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.6rem; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+    .content h3 { font-size: 1.25rem; font-weight: 600; margin: 24px 0 12px; color: #1e293b; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; font-size: 0.98rem;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
+    th, td { padding: 12px 16px; border: 1px solid var(--border); text-align: left; }
+    th { background: #f1f5f9; font-weight: 700; }
+    footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav">
+      <a href="../index.html">← Back to Overview</a>
+    </div>
+
+    <header>
+      <div class="badge">Mergetober 2026 Submission</div>
+      <h1>InfluxDB Time-Series Connector: Telemetry & Metrics Memory for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai (@bhomvratrai-glitch)</span>
+        <span>•</span>
+        <span>Issue #5820</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <h2>1. The Vision: Transforming High-Frequency Streams into Semantic Memory</h2>
+      <p>InfluxDB powers industrial IoT, infrastructure telemetry, and application performance metrics across millions of servers. However, raw nanosecond time-series data cannot be naively dumped into Graph RAG systems; tens of thousands of raw numerical points per minute would flood vector embeddings and cause graph memory explosions without offering actionable context.</p>
+      <p>The <code>cognee-community-connector-influxdb</code> solves this fundamental architectural challenge by querying InfluxDB v2 via official Flux endpoints and folding high-frequency points into statistical telemetry documents (mean, min, max, count, and threshold breach alerts), synthesizing numbers into semantic knowledge ready for LLM reasoning.</p>
+
+      <h2>2. Architecture & Flux Query Synthesis</h2>
+      <p>The connector interfaces with InfluxDB v2's <code>/api/v2/query?org={org}</code> endpoint using Token authentication.</p>
+
+      <div class="info-box">
+        <strong>Architectural Highlights:</strong>
+        <ul style="margin-top: 8px; margin-left: 20px;">
+          <li><strong>Dynamic Flux Templating:</strong> Automatically builds bounded Flux queries filtering by bucket, measurement, field, and configurable historical time horizons.</li>
+          <li><strong>Statistical Aggregation Engine:</strong> Parses annotated Flux CSV streams and folds series points into mathematical profiles (averages, maximums, minimums, and latest values).</li>
+          <li><strong>Automated Threshold Breach Detection:</strong> Compares aggregated peaks against configurable operational limits (e.g., <code>temp > 25.0°C</code>, <code>cpu_usage > 90%</code>), generating explicit alert tags for cognitive recall.</li>
+          <li><strong>Node Explosion Prevention:</strong> Emits one semantic document card per series-window rather than per point, maintaining optimal vector graph health.</li>
+        </ul>
+      </div>
+
+      <h2>3. Data Pipeline & Knowledge Synthesis</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>InfluxDB Telemetry Data</th>
+            <th>Aggregation Method</th>
+            <th>Cognee Graph Representation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Raw Sensor / Metric Stream</td>
+            <td>Flux Query Windowing</td>
+            <td>Grouped Series-Time Window</td>
+          </tr>
+          <tr>
+            <td>Numerical Values</td>
+            <td>Statistical Mean, Min, Max, Count</td>
+            <td>Semantic Markdown Summary</td>
+          </tr>
+          <tr>
+            <td>Out-of-Bound Readings</td>
+            <td>Threshold Comparison Rules</td>
+            <td>Cognitive Alert Tag & Incident Marker</td>
+          </tr>
+          <tr>
+            <td>Measurement & Field Tags</td>
+            <td>Composite Key Builder</td>
+            <td>Deterministic <code>source_id</code> Anchor</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>4. Quickstart & Cognee Ingestion</h2>
+      <pre><code class="language-python">import asyncio
+from cognee_community_connector_influxdb import InfluxDBConnector
+import cognee
+
+async def main():
+    connector = InfluxDBConnector(
+        url="http://localhost:8086",
+        token="your_influxdb_token",
+        org="production_org",
+        bucket="system_telemetry",
+        measurements=["cpu", "memory", "sensor_temp"],
+        range_days=7,
+        threshold_rules={"temp": 28.0, "usage_user": 85.0},
+    )
+
+    print("Fetching and aggregating InfluxDB telemetry...")
+    summaries = await connector.fetch_all()
+    print(f"Synthesized {len(summaries)} telemetry document cards.")
+
+    # Ingest into Cognee Knowledge Graph
+    for s in summaries:
+        await cognee.add(s["clean_text"])
+
+    await cognee.cognify()
+    print("Ingestion & Cognify complete!")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+</code></pre>
+
+      <h2>5. Verification & Testing</h2>
+      <p>The package contains an offline unit test suite verifying Flux query templating, annotated CSV stream parsing, statistical aggregation, threshold breach identification, and 401/404 API error isolation with zero live InfluxDB dependencies.</p>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 Bhomvrat Rai. Built for the WeMakeDevs × Cognee Mergetober Hackathon.</p>
+    </footer>
+  </div>
+</body>
+</html>
