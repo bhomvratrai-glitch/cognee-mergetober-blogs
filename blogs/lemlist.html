@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lemlist Sales Outreach Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #eff6ff; color: #2563eb; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.6rem; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; font-size: 0.98rem;
+    }
+    footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav">
+      <a href="../index.html">← Back to Overview</a>
+    </div>
+
+    <header>
+      <div class="badge">Mergetober 2026 Submission</div>
+      <h1>lemlist Sales Outreach Connector: External Campaign Intelligence for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai (@bhomvratrai-glitch)</span>
+        <span>•</span>
+        <span>Issue #5879</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <h2>1. The Vision: Capturing the Organization's External Pulse</h2>
+      <p>lemlist powers outbound email cadences, multi-channel lead generation, and client follow-ups for over 40,000 revenue teams. For autonomous AI sales copilots and marketing intelligence systems, understanding an organization's active outbound campaigns, delivery open rates, and prospect reply conversions creates a critical Graph RAG feedback loop between ongoing campaigns and product updates.</p>
+
+      <h2>2. Architecture & Privacy-First Metrics Design</h2>
+      <p>The <code>cognee-community-connector-lemlist</code> interacts directly with lemlist's REST API using HTTP Basic Authentication.</p>
+
+      <div class="info-box">
+        <strong>Architectural Highlights:</strong>
+        <ul style="margin-top: 8px; margin-left: 20px;">
+          <li><strong>Outreach Cadence Metadata:</strong> Ingests campaign names, lifecycle states (active, paused, draft, ended), schedules, timezones, and thematic labels.</li>
+          <li><strong>Normalized Engagement Metrics:</strong> Automatically tracks and aggregates dispatches, unique opens, link clicks, direct replies, and bounce rates.</li>
+          <li><strong>Privacy Safeguard by Design:</strong> Protects individual prospect email addresses and personal message bodies by ingesting campaign-level metrics and sequences, keeping node sizes optimal.</li>
+          <li><strong>Pacing & Error Resilience:</strong> Handles 401 unauthorized errors and 429 rate limits gracefully.</li>
+        </ul>
+      </div>
+
+      <h2>3. Quickstart & Cognee Ingestion</h2>
+      <pre><code class="language-python">import asyncio
+from cognee_community_connector_lemlist import LemlistConnector
+import cognee
+
+async def main():
+    api_key = "your_lemlist_api_key_here"
+    connector = LemlistConnector(api_key=api_key)
+
+    # Ingest active outreach campaigns and performance stats
+    documents = await connector.to_documents(limit=25, include_stats=True)
+
+    # Ingest into Cognee cognitive memory graph
+    await cognee.add(documents)
+    await cognee.cognify()
+
+    await connector.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+
+      <h2>4. Hermetic Offline Verification</h2>
+      <p>The connector features a 100% offline mock-driven pytest test suite covering campaign manifests, embedded engagement metrics, standalone statistics endpoints, rate calculations (open rate, reply rate), and authentication error handling (4/4 tests passing in 0.18s).</p>
+    </div>
+
+    <footer>
+      <p>Built with ❤️ by <strong>Bhomvrat Rai</strong> (@bhomvratrai-glitch) for the WeMakeDevs × Cognee Mergetober Hackathon.</p>
+    </footer>
+  </div>
+</body>
+</html>
