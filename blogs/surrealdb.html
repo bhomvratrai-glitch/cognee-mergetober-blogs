@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SurrealDB Multi-Model & Graph Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #eff6ff; color: #2563eb; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.6rem; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+    .content h3 { font-size: 1.25rem; font-weight: 600; margin: 24px 0 12px; color: #1e293b; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; font-size: 0.98rem;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
+    th, td { padding: 12px 16px; border: 1px solid var(--border); text-align: left; }
+    th { background: #f1f5f9; font-weight: 700; }
+    footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav">
+      <a href="../index.html">← Back to Overview</a>
+    </div>
+
+    <header>
+      <div class="badge">Mergetober 2026 Submission</div>
+      <h1>SurrealDB Multi-Model Connector: Document & Graph Relations for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai (@bhomvratrai-glitch)</span>
+        <span>•</span>
+        <span>Issue #5821</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <h2>1. The Vision: Multi-Model Database Intelligence in Graph RAG</h2>
+      <p>Modern applications frequently run on multi-model databases that seamlessly blend document storage, relational tables, and native graph relationships. SurrealDB represents the state-of-the-art in this paradigm. Traditional database connectors flatten multi-model records into generic SQL rows, discarding the essential graph edge relationships (such as <code>RELATE user:alice->purchased->product:laptop</code>).</p>
+      <p>The <code>cognee-community-connector-surrealdb</code> bridges this gap by extracting both document properties and native graph edge pointers (<code>in</code> and <code>out</code> relations), ensuring Cognee's entity extraction and Graph RAG memory capture interconnected organizational truth.</p>
+
+      <h2>2. Architecture & REST Discovery</h2>
+      <p>The connector interfaces directly with SurrealDB's HTTP <code>/sql</code> endpoint using the client's namespace (<code>NS</code>) and database (<code>DB</code>) headers with Bearer token or Basic authentication.</p>
+
+      <div class="info-box">
+        <strong>Architectural Highlights:</strong>
+        <ul style="margin-top: 8px; margin-left: 20px;">
+          <li><strong>Pre-flight Schema Discovery:</strong> Executes <code>INFO FOR DB;</code> to automatically discover available tables and schemas when explicit table lists are not provided.</li>
+          <li><strong>Graph Edge Preservation:</strong> Detects SurrealDB edge tables and maps <code>in</code> (origin node) and <code>out</code> (target node) relationships as first-class metadata.</li>
+          <li><strong>Bounded Extraction:</strong> Enforces table-level limits to ensure large datasets do not saturate graph vector buffers.</li>
+          <li><strong>Dual Authentication Support:</strong> Supports both JWT Bearer tokens and username/password Basic authentication for local and cloud SurrealDB deployments.</li>
+        </ul>
+      </div>
+
+      <h2>3. Multi-Model Data Mapping</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>SurrealDB Concept</th>
+            <th>Extraction Mode</th>
+            <th>Cognee Graph RAG Representation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Record ID (<code>user:123</code>)</td>
+            <td>Primary Identifier</td>
+            <td>Deterministic <code>source_id</code> & Node Anchor</td>
+          </tr>
+          <tr>
+            <td>Document Fields</td>
+            <td>Structured Attributes</td>
+            <td>Semantic Markdown Prose for Vectorization</td>
+          </tr>
+          <tr>
+            <td>Graph Edges (<code>in</code>/<code>out</code>)</td>
+            <td>Relation Pointer</td>
+            <td>First-class Relational Edge Metadata</td>
+          </tr>
+          <tr>
+            <td>Schema Metadata</td>
+            <td><code>INFO FOR DB</code></td>
+            <td>Database Namespace & Table Categorization</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>4. Quickstart & Cognee Ingestion</h2>
+      <pre><code class="language-python">import asyncio
+from cognee_community_connector_surrealdb import SurrealDBConnector
+import cognee
+
+async def main():
+    # Initialize connector targeting local or cloud SurrealDB instance
+    connector = SurrealDBConnector(
+        namespace="production",
+        database="analytics",
+        url="http://localhost:8000",
+        username="root",
+        password="root",
+        tables=["customer", "order", "purchased"],
+        limit_per_table=50,
+    )
+
+    print("Extracting multi-model data and graph edges from SurrealDB...")
+    documents = await connector.fetch_all()
+    print(f"Retrieved {len(documents)} records from SurrealDB.")
+
+    # Ingest into Cognee Knowledge Graph
+    for doc in documents:
+        await cognee.add(doc["clean_text"])
+
+    await cognee.cognify()
+    print("Ingestion & Cognify complete!")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+</code></pre>
+
+      <h2>5. Verification & Testing</h2>
+      <p>The package contains a comprehensive offline unit test suite verifying namespace/database validation, Bearer/Basic auth header creation, <code>INFO FOR DB;</code> schema discovery, edge relationship extraction, and error backoff handling.</p>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 Bhomvrat Rai. Built for the WeMakeDevs × Cognee Mergetober Hackathon.</p>
+    </footer>
+  </div>
+</body>
+</html>
