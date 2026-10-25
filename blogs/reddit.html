@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building the Reddit Data-Source Connector for Cognee — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #eff6ff; color: #2563eb; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.6rem; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+    .content h3 { font-size: 1.25rem; font-weight: 600; margin: 24px 0 12px; color: #1e293b; }
+    .content p { margin-bottom: 18px; font-size: 1.05rem; }
+    .content ul, .content ol { margin-bottom: 20px; padding-left: 24px; font-size: 1.05rem; }
+    .content li { margin-bottom: 8px; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; font-size: 0.98rem;
+    }
+    footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav">
+      <a href="../index.html">← Back to Overview</a>
+    </div>
+
+    <header>
+      <div class="badge">Mergetober 2026 Submission</div>
+      <h1>Building the Reddit Data-Source Connector for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai (@bhomvratrai-glitch)</span>
+        <span>•</span>
+        <span>Pull Request #500</span>
+        <span>•</span>
+        <span>Issue #4811</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <h2>1. The Problem: Unstructured Community Wisdom</h2>
+      <p>Developers and researchers rely heavily on technical discussions hosted across niche subreddits like <code>r/MachineLearning</code>, <code>r/LocalLLaMA</code>, and <code>r/Python</code>. However, AI agents traditionally lack a native bridge to index these real-world discussions into structured long-term memory graphs.</p>
+      <p>Without an integrated connector, ingesting Reddit discussions required custom scrapers and manual JSON parsing, leading to loss of context, broken comment hierarchies, and duplicate data.</p>
+
+      <h2>2. Architecture & Design</h2>
+      <p>The Reddit connector was built in <code>packages/connector/reddit/</code> using <strong>dlt</strong> and Cognee's document-mode ingestion pipeline:</p>
+
+      <div class="info-box">
+        <strong>Key Architectural Principles:</strong><br>
+        • <strong>Document-Mode Routing:</strong> Annotated with <code>DOCUMENT_SOURCE_ATTR</code> so submissions flow directly into Cognee's <code>cognify()</code> entity extraction engine rather than flat tabular rows.<br>
+        • <strong>Snapshot Replace:</strong> Emits resources with <code>write_disposition="replace"</code> ensuring stale threads are purged during orphan cleanup.<br>
+        • <strong>Dual Auth Support:</strong> Supports public unauthenticated read endpoints as well as OAuth script credentials for high-throughput pipelines.
+      </div>
+
+      <h2>3. Quickstart Code</h2>
+      <pre><code class="language-python">import asyncio
+import cognee
+from cognee_community_connector_reddit import reddit_source
+
+async def main():
+    # 1. Initialize Reddit connector for targeted subreddits
+    source = reddit_source(
+        subreddits=["LocalLLaMA", "MachineLearning"],
+        limit=25,
+    )
+
+    # 2. Add to Cognee memory and cognify into knowledge graph
+    await cognee.add(source)
+    await cognee.cognify()
+
+    # 3. Query community insights
+    results = await cognee.search("What are recent community consensus points on speculative decoding?")
+    for res in results:
+        print("-", res)
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+
+      <h2>4. Hermetic Testing & Verification</h2>
+      <p>To ensure resilience in CI/CD without relying on live network calls or Reddit API flakiness, we authored an offline test suite using a mocked client: <strong>4/4 unit tests passed in 0.74s</strong>.</p>
+    </div>
+
+    <footer>
+      <p>Cognee Mergetober Hackathon 2026 • Pull Request: <a href="https://github.com/topoteretes/cognee-community/pull/500" target="_blank" rel="noopener">#500</a></p>
+    </footer>
+  </div>
+</body>
+</html>

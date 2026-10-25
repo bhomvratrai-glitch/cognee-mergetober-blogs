@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognee Mergetober 2026 Integrations — Technical Case Studies</title>
+  <meta name="description" content="Technical deep-dives and documentation for 5 open-source Cognee data-source connectors built for Mergetober 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      border: 1px solid #bfdbfe;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    .grid {
+      display: grid;
+      gap: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px -8px rgba(0,0,0,0.08);
+      border-color: #cbd5e1;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      font-weight: 600;
+      color: #334155;
+    }
+    .card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 0.98rem;
+      margin-bottom: 16px;
+    }
+    .links {
+      display: flex;
+      gap: 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      padding-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Mergetober 2026 • WeMakeDevs × Cognee</div>
+      <h1>Cognee Connectors & Architecture</h1>
+      <p class="subtitle">Complete technical implementation guides, benchmark tests, and memory graph integration patterns for 5 Cognee community data connectors.</p>
+    </header>
+
+    <div class="grid">
+      <!-- 1. Reddit -->
+      <a href="blogs/reddit.html" class="card">
+        <div class="card-meta">
+          <span class="tag">Data Connector</span>
+          <span>Pull Request #500</span>
+          <span>Issue #4811</span>
+        </div>
+        <h2>Building the Reddit Data-Source Connector for Cognee</h2>
+        <p>How we implemented subreddits and user submission ingestion into Cognee memory with full comment threading, snapshot replacement, and semantic graph extraction.</p>
+        <div class="links">
+          <span>Read Technical Blog →</span>
+        </div>
+      </a>
+
+      <!-- 2. Medium -->
+      <a href="blogs/medium.html" class="card">
+        <div class="card-meta">
+          <span class="tag">Data Connector</span>
+          <span>Pull Request #501</span>
+          <span>Issue #5718</span>
+        </div>
+        <h2>Engineering the Medium Article & Publication Connector</h2>
+        <p>Extracting author feeds and publication essays into structured markdown documents for Cognee entity cognition and semantic topic modeling.</p>
+        <div class="links">
+          <span>Read Technical Blog →</span>
+        </div>
+      </a>
+
+      <!-- 3. WakaTime -->
+      <a href="blogs/wakatime.html" class="card">
+        <div class="card-meta">
+          <span class="tag">Data Connector</span>
+          <span>Pull Request #502</span>
+          <span>Issue #6218</span>
+        </div>
+        <h2>WakaTime Developer Activity Connector: Temporal Engineering Memory</h2>
+        <p>Connecting daily coding durations, language breakdowns, and editor telemetry to Cognee's cognitive knowledge graph.</p>
+        <div class="links">
+          <span>Read Technical Blog →</span>
+        </div>
+      </a>
+
+      <!-- 4. OpenStreetMap -->
+      <a href="blogs/openstreetmap.html" class="card">
+        <div class="card-meta">
+          <span class="tag">Data Connector</span>
+          <span>Pull Request #503</span>
+          <span>Issue #6187</span>
+        </div>
+        <h2>OpenStreetMap Places Connector: Zero-Key Geospatial Memory</h2>
+        <p>Ingesting local amenities, opening hours, wheelchair accessibility, and geo-coordinates via the Overpass API into Cognee without private tokens.</p>
+        <div class="links">
+          <span>Read Technical Blog →</span>
+        </div>
+      </a>
+
+      <!-- 5. YNAB -->
+      <a href="blogs/ynab.html" class="card">
+        <div class="card-meta">
+          <span class="tag">Data Connector</span>
+          <span>Pull Request #504</span>
+          <span>Issue #6062</span>
+        </div>
+        <h2>YNAB Personal Finance Connector: Cognitive Budget Intelligence</h2>
+        <p>Normalizing integer milliunits, split subtransactions, and budget category goals into natural language memory for personal financial reasoning.</p>
+        <div class="links">
+          <span>Read Technical Blog →</span>
+        </div>
+      </a>
+    </div>
+
+    <footer>
+      <p>Built with ❤️ by <strong>Bhomvrat Rai</strong> (@bhomvratrai-glitch) for the WeMakeDevs × Cognee Mergetober Hackathon.</p>
+    </footer>
+  </div>
+</body>
+</html>
