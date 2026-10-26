@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clockify Time Tracking & Project Management Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #eff6ff; color: #2563eb; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.6rem; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav">
+      <a href="../index.html">← Back to Connector Hub</a>
+    </div>
+
+    <header>
+      <span class="badge">Mergetober 2026 • Connector #29</span>
+      <h1>Integrating Clockify Time Tracking & Project Logs into Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai</span>
+        <span>•</span>
+        <span>Issue #6330</span>
+        <span>•</span>
+        <span>5 min read</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <p>Time tracking data represents an invaluable operational pulse of organizations, freelancers, and engineering teams. However, traditional time logs remain isolated in reporting dashboards. By ingesting Clockify time entries, project structures, and task descriptions into <strong>Cognee's semantic memory and knowledge graphs</strong>, AI agents can effortlessly answer questions such as: <em>"What activities consumed the majority of engineering hours last month?"</em> or <em>"Provide an itemized breakdown of billable tasks for Client Acme."</em></p>
+
+      <h2>Key Architectural Highlights</h2>
+      <ul>
+        <li><strong>Workspace & Project Topology:</strong> Automatically maps workspaces and associated projects to provide meaningful hierarchical context to each raw time log.</li>
+        <li><strong>Billable & Timeline Filtering:</strong> Retains essential metadata such as billable state, start/end timestamps, and ISO duration strings.</li>
+        <li><strong>Structured Semantic Markdown:</strong> Formats each time log into a structured markdown document optimized for vector embedding and Graph RAG relation extraction.</li>
+        <li><strong>Zero-Flake Test Suite:</strong> Comprehensive unit tests using standard library mocks ensure instantaneous CI/CD validation.</li>
+      </ul>
+
+      <h2>Usage Example</h2>
+      <pre><code>from cognee_community_connector_clockify import ClockifyConnector
+
+connector = ClockifyConnector(api_key="your_clockify_api_key")
+
+# Ingest recent time logs and project documents
+documents = connector.fetch_documents(page_size=20)
+
+for doc in documents:
+    print(f"Log: {doc['metadata']['project_name']} - {doc['metadata']['entry_id']}")
+    print(doc["text"])
+</code></pre>
+
+      <h2>Running Verification Tests</h2>
+      <p>Verify the connector package locally:</p>
+      <pre><code>PYTHONPATH=packages/connector/clockify python3 -m pytest packages/connector/clockify/tests/ -v
+# 4 passed in 0.10s</code></pre>
+    </div>
+  </div>
+</body>
+</html>
