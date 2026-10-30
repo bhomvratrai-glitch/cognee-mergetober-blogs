@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RevenueCat In-App Subscriptions & Entitlements Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #e11d48;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: #e11d48; font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #ffe4e6; color: #be123c; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #fecdd3;
+    }
+    h1 { font-size: 2.3rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.5rem; font-weight: 700; margin: 32px 0 16px; color: #0f172a; }
+    .content p { margin-bottom: 16px; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav"><a href="../index.html">← Back to Connector Showcase Hub</a></div>
+    <header>
+      <span class="badge">Mergetober 2026 Connector</span>
+      <h1>RevenueCat In-App Subscriptions & Entitlements Connector for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai</span>
+        <span>•</span>
+        <span>October 30, 2026</span>
+        <span>•</span>
+        <span>topoteretes/cognee#6358</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <h2>Architectural Overview</h2>
+      <p>Mobile engineering teams building cross-platform apps rely on <strong>RevenueCat</strong> for subscriber state management across Apple App Store, Google Play Store, and Stripe Web Billing. This connector brings subscriber lifecycle metrics, plan purchases, expiration milestones, and churn signals directly into <strong>Cognee Knowledge Graphs</strong>.</p>
+
+      <h2>Key Capabilities</h2>
+      <ul>
+        <li><strong>Multi-Store Entitlement Extraction:</strong> Unifies active entitlements across iOS and Android ecosystems.</li>
+        <li><strong>Subscription Churn Signals:</strong> Tracks unsubscribe detection dates, cancellations, and active renewal dates.</li>
+        <li><strong>Semantic Customer Profiles:</strong> Converts raw JSON subscriber payloads into queryable Markdown graphs.</li>
+      </ul>
+
+      <h2>Usage Example</h2>
+      <pre><code>from cognee_community_connector_revenuecat import RevenueCatConnector
+
+connector = RevenueCatConnector(api_key="YOUR_REVENUECAT_SECRET_KEY")
+documents = connector.fetch_documents_for_users(["user_premium_123"])
+
+print(f"Ingested {len(documents)} subscription documents into Cognee.")
+for doc in documents:
+    print(doc["metadata"])
+    print(doc["text"])
+</code></pre>
+
+      <h2>Unit Testing & Verification</h2>
+      <p>Hermetic unit tests verify subscriber entitlement parsing, churn detection, and validation checks (100% passing in 0.11s).</p>
+    </main>
+  </div>
+</body>
+</html>

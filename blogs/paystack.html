@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paystack Transactions & Refunds Connector — Mergetober 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #059669;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    .back-nav { margin-bottom: 30px; }
+    .back-nav a { color: #059669; font-weight: 600; text-decoration: none; }
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: #ecfdf5; color: #047857; font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; border: 1px solid #a7f3d0;
+    }
+    h1 { font-size: 2.3rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #0f172a; }
+    .meta { font-size: 0.95rem; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .content h2 { font-size: 1.5rem; font-weight: 700; margin: 32px 0 16px; color: #0f172a; }
+    .content p { margin-bottom: 16px; }
+    pre {
+      background: #0f172a; color: #f8fafc; padding: 20px; border-radius: var(--radius);
+      overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin: 24px 0;
+    }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-nav"><a href="../index.html">← Back to Connector Showcase Hub</a></div>
+    <header>
+      <span class="badge">Mergetober 2026 Connector</span>
+      <h1>Paystack Payment Transactions & Refunds Connector for Cognee</h1>
+      <div class="meta">
+        <span>By Bhomvrat Rai</span>
+        <span>•</span>
+        <span>October 30, 2026</span>
+        <span>•</span>
+        <span>topoteretes/cognee#6390</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <h2>Architectural Overview</h2>
+      <p>African merchants and modern tech companies across Nigeria, Ghana, South Africa, and Kenya use <strong>Paystack</strong> to process billions in transactions. However, autonomous agents in customer support, operations, and finance currently lack visibility into merchant payment histories. This connector indexes transactions, customer details, and refunds into <strong>Cognee Knowledge Graphs</strong>.</p>
+
+      <h2>Key Capabilities</h2>
+      <ul>
+        <li><strong>Transaction Intelligence:</strong> Maps references, amounts, currencies (NGN, GHS, ZAR, KES, USD), customer emails, and channels.</li>
+        <li><strong>Refund Correlation:</strong> Associates refund events with initial transaction nodes to maintain complete ledger transparency.</li>
+        <li><strong>Subunit Normalization:</strong> Automatically converts kobo/cents to standard major financial denominations.</li>
+      </ul>
+
+      <h2>Usage Example</h2>
+      <pre><code>from cognee_community_connector_paystack import PaystackConnector
+
+connector = PaystackConnector(secret_key="sk_live_...")
+documents = connector.fetch_documents(page_size=50)
+
+print(f"Ingested {len(documents)} financial documents into Cognee.")
+for doc in documents[:2]:
+    print(doc["metadata"])
+    print(doc["text"])
+</code></pre>
+
+      <h2>Unit Testing & Verification</h2>
+      <p>Hermetic unit tests verify JSON serialization, API mocks, and document formatting (100% passing in 0.09s).</p>
+    </main>
+  </div>
+</body>
+</html>
